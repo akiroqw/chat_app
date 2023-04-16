@@ -26,13 +26,11 @@ impl Message {
 
 pub struct User {
 
-
 }
 
 pub struct Server{
 
 }
-
 
 
 
