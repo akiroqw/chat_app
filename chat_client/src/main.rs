@@ -24,7 +24,6 @@ fn main() {
 
             Ok(_) =>{
                 let msg = buff.into_iter().take_while(|&x| x != 0).collect::<Vec<_>>();
-                println!("Message recv {:?}", msg);
             },
             Err(ref err) if err.kind() == ErrorKind::WouldBlock => (),
             Err(_) =>{
@@ -37,7 +36,6 @@ fn main() {
                 let mut buff  = msg.clone().into_bytes();
                 buff.resize(MESSAGE_SIZE, 0);
                 client.write_all(&buff).expect("Writing to socket failed!");
-                println!("Message send {:?}", msg);
             }
             Err(TryRecvError::Empty) => (),
             Err(TryRecvError::Disconnected) => break
@@ -46,9 +44,11 @@ fn main() {
         thread::sleep(Duration::from_millis(100));
     });
 
-    print!("Write a Message --> ");
-
+   
     loop {
+
+        println!("Write a Message --> ");
+
         let mut buff = String::new();
         io::stdin().read_line(& mut buff).expect("Reading Failed!!!");
 
