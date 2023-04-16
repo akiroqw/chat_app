@@ -2,26 +2,43 @@ use std::io::{ErrorKind, Read, Write};
 use std::net::TcpListener;
 use std::sync::mpsc;
 use std::thread;
-use chrono::{DateTime, Utc};
+use chrono::{Utc, DateTime};
 use std::time::Duration;
 
-#[allow(dead_code)]
-struct Client {
-    name: String,
-    id: u64,
+
+pub struct Message {
+    pub text : String,
+    pub sender_address : String,
+    pub reciever_address : String,
+    pub time_sending : DateTime<Utc>,
 }
 
-#[allow(dead_code)]
-impl Client {
-    fn new(name: String, id: u64) -> Self {
-        Self {
-            name,
-            id,
+impl Message {
+    pub fn new(sender_address : String, reciever_address : String, text : String, time_sending : DateTime<Utc>) -> Message{
+        Message {
+            text : text,
+            sender_address : sender_address,
+            reciever_address : reciever_address,
+            time_sending : time_sending,
         }
     }
 }
 
-fn main() {
+pub struct User {
+
+
+}
+
+pub struct Server{
+
+}
+
+
+
+
+
+
+fn main() -> ! {
 
     const LOCAL : &str = "127.0.0.1:6000";
     const MESSAGE_SIZE : usize = 32;
@@ -31,10 +48,9 @@ fn main() {
 
     println!("The server is running: [{}]", Utc::now());
     
-    let mut clients =  vec![];
+    let mut clients: Vec<std::net::TcpStream> =  vec![];
 
-    let (tx, rx) = mpsc::channel::<String>();
-
+    let (tx, rx): (mpsc::Sender<String>, mpsc::Receiver<String>) = mpsc::channel::<String>();
 
     loop{
 
@@ -44,7 +60,7 @@ fn main() {
 
             let tx = tx.clone();
             clients.push(socket.try_clone().expect("Failed to clone client!"));
-
+            
 
             thread::spawn(move || loop {
 
@@ -54,7 +70,6 @@ fn main() {
                     Ok(_) =>{
                         let msg = buff.into_iter().take_while(|&x| x != 0).collect::<Vec<_>>();
                         let msg = String::from_utf8(msg).expect("Invalid convert to UTF8.");
-
 
                         println!("{} : {:?}", address, msg);
                         
@@ -75,7 +90,7 @@ fn main() {
 
         if let Ok(msg) = rx.try_recv(){
 
-            clients = clients.into_iter().filter_map(|mut client| {
+                clients = clients.into_iter().filter_map(|mut client| {
                 let mut buff = msg.clone().into_bytes();
 
                 buff.resize(MESSAGE_SIZE, 0);
@@ -86,7 +101,6 @@ fn main() {
         }
 
         thread::sleep(Duration::from_millis(100));
-
     }
 
 }

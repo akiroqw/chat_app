@@ -10,7 +10,6 @@ fn main() {
     const LOCAL : &str = "127.0.0.1:6000";
     const MESSAGE_SIZE : usize = 32;
 
-
     let mut client : TcpStream = TcpStream::connect(LOCAL).expect("Stream failed to connect!");
     client.set_nonblocking(true).expect("Failed to initalize non-blocking.");
 
