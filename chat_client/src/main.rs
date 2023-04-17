@@ -3,26 +3,25 @@ use std::net::TcpStream;
 use std::sync::mpsc::{self, TryRecvError};
 use std::thread;
 use std::time::Duration;
-
+use lib::*;
 
 fn main() {
 
-    const LOCAL : &str = "127.0.0.1:6000";
-    const MESSAGE_SIZE : usize = 32;
+    let config = get_config().unwrap();
 
-    let mut client : TcpStream = TcpStream::connect(LOCAL).expect("Stream failed to connect!");
+    let mut client : TcpStream = TcpStream::connect(config.host).expect("Stream failed to connect!");
     client.set_nonblocking(true).expect("Failed to initalize non-blocking.");
 
     let (tx, rx) = mpsc::channel::<String>();
 
 
     thread::spawn(move || loop {
-        let mut buff = vec![0; MESSAGE_SIZE];
+        let mut buff = vec![0; config.message_size];
         
         match client.read_exact(&mut buff) {
 
             Ok(_) =>{
-                let msg = buff.into_iter().take_while(|&x| x != 0).collect::<Vec<_>>();
+                //let msg = buff.into_iter().take_while(|&x| x != 0).collect::<Vec<_>>();
             },
             Err(ref err) if err.kind() == ErrorKind::WouldBlock => (),
             Err(_) =>{
@@ -33,7 +32,7 @@ fn main() {
         match rx.try_recv() {
             Ok(msg) =>{
                 let mut buff  = msg.clone().into_bytes();
-                buff.resize(MESSAGE_SIZE, 0);
+                buff.resize(config.message_size, 0);
                 client.write_all(&buff).expect("Writing to socket failed!");
             }
             Err(TryRecvError::Empty) => (),

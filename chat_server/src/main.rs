@@ -2,46 +2,16 @@ use std::io::{ErrorKind, Read, Write};
 use std::net::TcpListener;
 use std::sync::mpsc;
 use std::thread;
-use chrono::{Utc, DateTime};
+use chrono::{Utc};
 use std::time::Duration;
-
-
-pub struct Message {
-    pub text : String,
-    pub sender_address : String,
-    pub reciever_address : String,
-    pub time_sending : DateTime<Utc>,
-}
-
-impl Message {
-    pub fn new(sender_address : String, reciever_address : String, text : String, time_sending : DateTime<Utc>) -> Message{
-        Message {
-            text : text,
-            sender_address : sender_address,
-            reciever_address : reciever_address,
-            time_sending : time_sending,
-        }
-    }
-}
-
-pub struct User {
-
-}
-
-pub struct Server{
-
-}
-
-
-
+use lib::*;
 
 
 fn main() -> ! {
 
-    const LOCAL : &str = "127.0.0.1:6000";
-    const MESSAGE_SIZE : usize = 32;
-
-    let server : TcpListener = TcpListener::bind(LOCAL).expect("Failed to connect to the server!");
+    let config = get_config().unwrap();
+    
+    let server : TcpListener = TcpListener::bind(config.host).expect("Failed to connect to the server!");
     server.set_nonblocking(true).expect("Failed to initalize non-blocking.");
 
     println!("The server is running: [{}]", Utc::now());
@@ -62,7 +32,7 @@ fn main() -> ! {
 
             thread::spawn(move || loop {
 
-                let mut buff = vec![0; MESSAGE_SIZE];
+                let mut buff = vec![0; config.message_size];
                 match socket.read_exact(& mut buff) {
 
                     Ok(_) =>{
@@ -91,7 +61,7 @@ fn main() -> ! {
                 clients = clients.into_iter().filter_map(|mut client| {
                 let mut buff = msg.clone().into_bytes();
 
-                buff.resize(MESSAGE_SIZE, 0);
+                buff.resize(config.message_size, 0);
 
                 client.write_all(&buff).map(|_| client).ok()
 

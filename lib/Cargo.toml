@@ -1,11 +1,13 @@
 [package]
-name = "chat_client"
+name = "lib"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-serde = { version = "1.0.145", features = ["derive"]}
+chrono = { version = "0.4", features = ["serde"] }
+deadpool-postgres = { version = "0.10.0", features = ["serde"] }
 toml = "0.7.3"
-lib = {path = "..//lib"}
+serde = "1.0.160"
+serde_json = "1.0.96"
