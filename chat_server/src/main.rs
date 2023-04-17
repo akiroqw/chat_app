@@ -1,4 +1,4 @@
-use std::io::{ErrorKind, Read, Write};
+use std::io::{ErrorKind, Read, Write, self};
 use std::net::TcpListener;
 use std::sync::mpsc;
 use std::thread;
@@ -10,6 +10,11 @@ use lib::*;
 fn main() -> ! {
 
     let config = get_config().unwrap();
+
+    println!("Press Enter to start the server");
+
+    let mut buffer = String::new();
+    io::stdin().read_line(&mut buffer).expect("Unable to read from stdin");
     
     let server : TcpListener = TcpListener::bind(config.host).expect("Failed to connect to the server!");
     server.set_nonblocking(true).expect("Failed to initalize non-blocking.");

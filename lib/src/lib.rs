@@ -13,7 +13,7 @@ impl Config {
 }
 
 pub fn get_config() -> Result<Config, std::io::Error> {
-    let mut file = File::open("..//lib//src//Config.json")?;
+    let mut file = File::open("C://chat_app//lib//Config.json")?;
     let mut contents = String::new();
     file.read_to_string(&mut contents)?;
     let config = serde_json::from_str(&contents)?;
