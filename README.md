@@ -4,7 +4,7 @@ A small console application for user chat. Description of receiving and sending 
 
 ![Introduction](https://i.pinimg.com/originals/05/f1/7d/05f17d6e87ad18f65940f896f4cf11a4.gif)
 
-## Requirement.
+## Requirement
 * Rust version 1.68.2 must be installed (during development we started with version 1.68.2, so we cannot guarantee that earlier versions will work);
 
 ## Installation
