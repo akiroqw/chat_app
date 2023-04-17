@@ -15,10 +15,28 @@ $ git clone https://github.com/akiroqw/chat_app.git
 ```
 
 ## Usage
-* If required, the following parameters must be changed(chat_server/src/main.rs/ or chat_client/src/main.rs):
+* First you need to collect all the projects so that Sargo will finish downloading the dependencies
 ```rs
-const LOCAL : &str = "127.0.0.1:6000";
-const MESSAGE_SIZE : usize = 32;
+  cargo build
+```
+* Then to start the client, you must first start the server for hosting.
+```rs
+  cd chat_server
+  cargo check
+  cargo run
+```
+* Next, you can start the clients
+```rs
+  cd chat_client
+  cargo check
+  cargo run
+```
+* If required, the following parameters must be changed(lib/Config.json):
+```json
+{
+    "host": "127.0.0.1:6000",
+    "message_size": 32
+}
 ```
 * This is the required message size and the host where TCPListener listens for connections and TCPStream which opens streams and connects to the host. 
 You can change the listening host, but you also need to change the connection parameters.
